@@ -113,7 +113,7 @@ $mediaMobSmall: 480px;
     font-family: $mainFont;
 
     @media (max-width: 1540px) {
-        padding: 0px 120px 0px 60px;
+        padding: 80px 120px 0px 60px;
     }
 
     @media (max-width: $mediaIpad) {
@@ -168,6 +168,10 @@ $mediaMobSmall: 480px;
             top: 7px !important;
             width: 23px !important;
             height: 13px !important;
+
+            @media (max-width: $mediaIpad) {
+                 top: 3px !important;
+            }
         }
     }
 }
@@ -187,15 +191,12 @@ $mediaMobSmall: 480px;
     }
 }
 
-body {
-    background-color: #000;
-}
-
 .ironov {
     background-image: url('../assets/image/light.png');
     background-repeat: no-repeat;
     background-position: bottom;
     background-size: contain;
+    background-color: #000;
 
     @media (max-width: $bootstrapMob) {
         background-size: revert-layer;
@@ -853,11 +854,10 @@ body {
     }
 
     &__hero {
-        margin-top: 80px;
-        min-height: 500px;
+        min-height: 600px;
 
         @media (max-width: $mediaMini) {
-            min-height: 400px;
+            min-height: 500px;
         }
 
         @media (max-width: $mediaMini) {
@@ -936,6 +936,9 @@ body {
                 @media (max-width: $mediaIpad) {
                     font-size: 16px;
                     line-height: normal;
+                }
+
+                @media (max-width: $mediaMini) {
                     width: 100%;
                 }
 
@@ -950,7 +953,7 @@ body {
                     background-repeat: no-repeat;
                     background-size: contain;
 
-                    @media (max-width: $mediaIpad) {
+                    @media (max-width: $mediaMini) {
                         right: -5px;
                     }
                 }
