@@ -125,11 +125,11 @@ $mediaMobSmall: 480px;
     }
 
     @media (max-width: $mediaTiny) {
-        padding: 20px;
+        padding: 20px 20px 0px 20px;
     }
 
     @media (max-width: 365px) {
-        padding: 10px;
+        padding: 10px 10px 0px 10px;
     }
 
     p {
@@ -199,6 +199,7 @@ body {
 
     @media (max-width: $mediaMobSmall) {
         background-size: revert-layer;
+        background-position-x: 20%;
     }
 
     &__content {
