@@ -197,7 +197,7 @@ body {
     background-position: bottom;
     background-size: contain;
 
-    @media (max-width: $mediaMobSmall) {
+    @media (max-width: $bootstrapMob) {
         background-size: revert-layer;
         background-position-x: 20%;
     }
