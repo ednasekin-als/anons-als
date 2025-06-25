@@ -388,7 +388,7 @@ body {
             }
 
             @media (max-width:$mediaMobSmall) {
-                font-size: 24px;
+                font-size: 26px;
             }
         }
 
@@ -400,18 +400,18 @@ body {
             line-height: 40px;
 
             @media (max-width: 1300px) {
-                font-size: 22px;
+                font-size: 24px;
                 line-height: 30px;
             }
 
             @media (max-width: $mediaMini) {
-                font-size: 20px;
+                font-size: 22px;
                 line-height: 25px;
+                margin-bottom: 50px !important;
             }
 
             @media (max-width:$mediaMobSmall) {
-                font-size: 16px;
-                line-height: normal;
+                font-size: 22px;
             }
         }
     }
@@ -452,7 +452,6 @@ body {
         gap: 40px;
 
         @media (max-width: $mediaMobSmall) {
-            flex-direction: column;
             gap: 5px;
         }
 
