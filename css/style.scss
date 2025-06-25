@@ -322,8 +322,12 @@ body {
             z-index: 10;
             cursor: pointer;
 
-            @media (max-width: $mediaMobSmall) {
+            @media (max-width: $mediaMini) {
                 width: 50px;
+            }
+
+            @media (max-width: $mediaMobSmall) {
+                width: 20px;
             }
 
             &--prev {
