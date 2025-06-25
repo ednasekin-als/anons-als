@@ -61,6 +61,14 @@ $(document).ready(function () {
       });
     }
 
+    const $parent = $carousel.closest('.ironov__video');
+    $parent.find('.ironov__video-click--prev').on('click', function () {
+      $carousel.trigger('prev.owl.carousel');
+    });
+    $parent.find('.ironov__video-click--next').on('click', function () {
+      $carousel.trigger('next.owl.carousel');
+    });
+
     $carousel.trigger('to.owl.carousel', [1, 0]);
   });
 
@@ -109,19 +117,27 @@ $(document).ready(function () {
     }
   });
 
-
-  function initSlider($container, speed = 5) {
+  function initSlider($container, speed = 0.2) {
     const $track = $container.find('.ironov__slideshow--images');
     let leftPos = 0;
-    const imgWidth = $track.find('img').eq(0).outerWidth(true);
+    const isReversed = $container.hasClass('is-reversed');
+
+    function getImgWidth() {
+      return $track.find('img').eq(0).outerWidth(true);
+    }
 
     function animate() {
-      leftPos -= speed;
+      const imgWidth = getImgWidth();
+      leftPos += isReversed ? speed : -speed;
 
-      if (Math.abs(leftPos) >= imgWidth) {
-        const $firstImg = $track.find('img').eq(0);
-        $track.append($firstImg);
+      if (!isReversed && Math.abs(leftPos) >= imgWidth) {
+        $track.append($track.find('img').first());
         leftPos += imgWidth;
+      }
+
+      if (isReversed && leftPos >= 0) {
+        $track.prepend($track.find('img').last());
+        leftPos -= imgWidth;
       }
 
       $track.css('left', leftPos + 'px');
@@ -133,9 +149,10 @@ $(document).ready(function () {
 
   $(function () {
     $('.ironov__slideshow').each(function () {
-      initSlider($(this), 1);
+      initSlider($(this), 0.5); // очень медленное движение
     });
   });
+
 
   const video = $('.ironov__video video').get(0);
   if (!video) return;
