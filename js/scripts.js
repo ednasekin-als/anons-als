@@ -1,9 +1,7 @@
-$(document).ready(function () {
-  $('.video-carousel').each(function (index, carouselEl) {
-    const $carousel = $(carouselEl);
-
-    // Получаем и парсим JSON с видео
-    const videoDataRaw = $carousel.attr('data-videos');
+document.addEventListener('DOMContentLoaded', () => {
+  // Инициализация каруселей с видео
+  document.querySelectorAll('.video-carousel').forEach((carouselEl) => {
+    const videoDataRaw = carouselEl.getAttribute('data-videos');
     let videoList = [];
 
     try {
@@ -12,28 +10,27 @@ $(document).ready(function () {
       console.warn('Некорректный формат data-videos:', e);
     }
 
-    $carousel.empty();
+    carouselEl.innerHTML = ''; // очистка
 
-    // Вставляем слайды
     videoList.forEach(video => {
-      const slide = `
-        <div class="item">
-          <div class="video-wrapper" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
-            <iframe 
-              src="https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0" 
-              style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius: 15px;" 
-              frameborder="0" 
-              allow="autoplay; fullscreen" 
-              allowfullscreen>
-            </iframe>
-          </div>
+      const slide = document.createElement('div');
+      slide.classList.add('item');
+      slide.innerHTML = `
+        <div class="video-wrapper" style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;">
+          <iframe 
+            src="https://player.vimeo.com/video/${video.id}?title=0&byline=0&portrait=0" 
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius: 15px;" 
+            frameborder="0" 
+            allow="autoplay; fullscreen" 
+            allowfullscreen>
+          </iframe>
         </div>
       `;
-      $carousel.append(slide);
+      carouselEl.appendChild(slide);
     });
 
-    if (videoList.length > 0) {
-      $carousel.owlCarousel({
+    if (videoList.length > 0 && typeof $(carouselEl).owlCarousel === 'function') {
+      $(carouselEl).owlCarousel({
         items: 1,
         center: true,
         dots: true,
@@ -59,27 +56,29 @@ $(document).ready(function () {
           }
         }
       });
+
+      const parent = carouselEl.closest('.ironov__video');
+      parent.querySelector('.ironov__video-click--prev')?.addEventListener('click', () => {
+        $(carouselEl).trigger('prev.owl.carousel');
+      });
+
+      parent.querySelector('.ironov__video-click--next')?.addEventListener('click', () => {
+        $(carouselEl).trigger('next.owl.carousel');
+      });
+
+      $(carouselEl).trigger('to.owl.carousel', [1, 0]);
     }
-
-    const $parent = $carousel.closest('.ironov__video');
-    $parent.find('.ironov__video-click--prev').on('click', function () {
-      $carousel.trigger('prev.owl.carousel');
-    });
-    $parent.find('.ironov__video-click--next').on('click', function () {
-      $carousel.trigger('next.owl.carousel');
-    });
-
-    $carousel.trigger('to.owl.carousel', [1, 0]);
   });
 
-
-  function initSlider($container, speed = 0.2) {
-    const $track = $container.find('.ironov__slideshow--images');
+  // Инициализация бесконечного горизонтального слайдера
+  document.querySelectorAll('.ironov__slideshow').forEach(slideshow => {
+    const track = slideshow.querySelector('.ironov__slideshow--images');
+    const isReversed = slideshow.classList.contains('is-reversed');
     let leftPos = 0;
-    const isReversed = $container.hasClass('is-reversed');
+    const speed = 0.5;
 
     function getImgWidth() {
-      return $track.find('img').eq(0).outerWidth(true);
+      return track.querySelector('img')?.offsetWidth || 0;
     }
 
     function animate() {
@@ -87,65 +86,57 @@ $(document).ready(function () {
       leftPos += isReversed ? speed : -speed;
 
       if (!isReversed && Math.abs(leftPos) >= imgWidth) {
-        $track.append($track.find('img').first());
+        track.appendChild(track.querySelector('img'));
         leftPos += imgWidth;
       }
 
       if (isReversed && leftPos >= 0) {
-        $track.prepend($track.find('img').last());
+        track.insertBefore(track.lastElementChild, track.firstElementChild);
         leftPos -= imgWidth;
       }
 
-      $track.css('left', leftPos + 'px');
+      track.style.left = leftPos + 'px';
       requestAnimationFrame(animate);
     }
 
     animate();
+  });
+
+  // Автостарт видео при появлении в зоне видимости
+  const video = document.querySelector('.ironov__video video');
+  if (video) {
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => { });
+        } else {
+          video.pause();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    observer.observe(video);
   }
 
-  $(function () {
-    $('.ironov__slideshow').each(function () {
-      initSlider($(this), 0.5); // очень медленное движение
+  // Наведение на блоки материалов
+  document.querySelectorAll('.ironov__materials').forEach(block => {
+    const links = block.querySelectorAll('.ironov__materials--links a, .ironov__materials--preview a');
+
+    links.forEach(link => {
+      link.addEventListener('mouseenter', () => {
+        const index = link.getAttribute('data-index');
+        block.classList.add('materials--disable');
+
+        block.querySelectorAll('.ironov__materials--links a').forEach(a => a.classList.remove('active'));
+        block.querySelectorAll('.ironov__materials--preview a').forEach(a => a.classList.remove('active'));
+
+        const activeLinks = block.querySelectorAll(`[data-index="${index}"]`);
+        activeLinks.forEach(a => a.classList.add('active'));
+      });
+
+      link.addEventListener('mouseleave', () => {
+        block.querySelectorAll('a.active').forEach(a => a.classList.remove('active'));
+      });
     });
   });
-
-
-  const video = $('.ironov__video video').get(0);
-  if (!video) return;
-
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        video.play().catch(() => { });
-      } else {
-        video.pause();
-      }
-    });
-  }, { threshold: 0.5 });
-
-  observer.observe(video);
-
-  $('.ironov__materials').each(function () {
-    const $block = $(this); // текущий блок
-
-    // наведение на ссылки
-    $block.find('.ironov__materials--links a, .ironov__materials--preview a').hover(
-      function () {
-        const index = $(this).data('index');
-
-        $block.addClass('materials--disable');
-
-        $block.find('.ironov__materials--links a').removeClass('active');
-        $block.find('.ironov__materials--preview a').removeClass('active');
-
-        $block.find('.ironov__materials--links a[data-index="' + index + '"]').addClass('active');
-        $block.find('.ironov__materials--preview a[data-index="' + index + '"]').addClass('active');
-      },
-      function () {
-        $block.find('.ironov__materials--links a').removeClass('active');
-        $block.find('.ironov__materials--preview a').removeClass('active');
-      }
-    );
-  });
-
 });
