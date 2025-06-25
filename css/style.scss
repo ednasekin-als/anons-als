@@ -197,6 +197,10 @@ body {
     background-position: bottom;
     background-size: contain;
 
+    @media (max-width: $mediaMobSmall) {
+        background-size: revert-layer;
+    }
+
     &__content {
         display: flex;
         justify-content: space-between;
