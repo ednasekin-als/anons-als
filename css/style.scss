@@ -170,7 +170,7 @@ $mediaMobSmall: 480px;
             height: 13px !important;
 
             @media (max-width: $mediaIpad) {
-                 top: 3px !important;
+                top: 3px !important;
             }
         }
     }
@@ -942,6 +942,10 @@ $mediaMobSmall: 480px;
                     width: 100%;
                 }
 
+                @media (max-width: $mediaMobSmall) {
+                    width: 90%;
+                }
+
                 &::after {
                     content: '';
                     position: absolute;
@@ -955,6 +959,10 @@ $mediaMobSmall: 480px;
 
                     @media (max-width: $mediaMini) {
                         right: -5px;
+                    }
+
+                    @media (max-width: $mediaMobSmall) {
+                        right: -20px;
                     }
                 }
             }
